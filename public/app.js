@@ -1,15 +1,75 @@
-// Grab the articles as a json
+
+// When you click the scrappe articles, grab the articles as a json
+$(document).on("click", "#scrape", function() {
 $.getJSON("/articles", function(data) {
+  console.log("we are here");
   // For each one
-  for (var i = 0; i < data.length; i++) {
+  // for (var i = 0; i < data.length; i++) {
+    for (var i = 0; i < 10; i++) {
     // Display the apropos information on the page
     $("#articles").append("<p data-id='" + data[i]._id + "'>" + data[i].title + "<br />" + data[i].link + "</p>");
+    // A button to add a note, with the id of the article saved to it
+    $("#articles").append("<button data-id='" + data[i]._id + "' id='savedArticles'>Save Article</button>");
   }
+})
 });
 
 
-// Whenever someone clicks a p tag
-$(document).on("click", "p", function() {
+// When you click the save articles buttom, save the article selected (using its id)
+$(document).on("click", "#savedArticles", function() {
+  // Save the id from the article selected
+  var thisId = $(this).attr("data-id");
+  console.log(thisId);
+
+  // Now make an ajax call for the Article
+  $.ajax({
+    method: "GET",
+    url: "/articles/" + thisId
+  })
+    // With that done, add the note information to the page
+    .done(function(data) {
+    // Display the apropos information on the page
+    $("#selectedArticles").append("<p data-id='" + data._id + "'>" + data.title + "<br />" + data.link + "</p>");
+    // A button to add a note, with the id of the article saved to it
+    $("#selectedArticles").append("<button data-id='" + data._id + "' id='addNote'>Add a Note</button>");
+    // A button to delete the saved article, with the id of the article saved to it
+    $("#selectedArticles").append("<button data-id='" + data._id + "' id='deleteArticle'>Delete Article</button>");
+
+  })
+});
+
+
+// When you click delete articles buttom, remove this article from "Selected Articles" list
+$(document).on("click", "#deleteArticle", function() {
+  // Save the id from the article selected
+  var thisId = $(this).attr("data-id");
+  console.log(thisId);
+
+
+
+    // Now make an ajax call for the Article
+  $.ajax({
+    method: "GET",
+    url: "/articles/" + thisId
+  })
+    // With that done, add the note information to the page
+    .done(function(data) {
+    // Display the apropos information on the page
+    $("#selectedArticles").remove("#data._id");
+    // // A button to add a note, with the id of the article saved to it
+    // $("#selectedArticles").children("<button>").remove();
+    // // A button to delete the saved article, with the id of the article saved to it
+    // $("#selectedArticles").children("<button>").remove();
+
+  })
+
+});
+
+
+
+
+// Whenever someone clicks on the "Add a Note" buttom
+$(document).on("click", "addNote", function() {
   // Empty the notes from the note section
   $("#notes").empty();
   // Save the id from the p tag

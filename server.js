@@ -30,7 +30,7 @@ app.use(bodyParser.urlencoded({
 app.use(express.static("public"));
 
 // Database configuration with mongoose
-mongoose.connect("mongodb://localhost/week18day3mongoose");
+mongoose.connect("mongodb://localhost/homework18");
 var db = mongoose.connection;
 
 // Show any mongoose errors
@@ -63,6 +63,7 @@ app.get("/scrape", function(req, res) {
       result.title = $(this).children("a").text();
       result.link = $(this).children("a").attr("href");
 
+
       // Using our Article model, create a new entry
       // This effectively passes the result object to the entry (and the title and link)
       var entry = new Article(result);
@@ -73,10 +74,10 @@ app.get("/scrape", function(req, res) {
         if (err) {
           console.log(err);
         }
-        // Or log the doc
-        else {
-          console.log(doc);
-        }
+        // // Or log the doc
+        // else {
+        //   console.log(doc);
+        // }
       });
 
     });
@@ -99,6 +100,22 @@ app.get("/articles", function(req, res) {
     }
   });
 });
+
+// This will get the articles saved
+app.get("/articles", function(req, res) {
+  // Grab every doc in the Articles array
+  Article.find({}, function(error, doc) {
+    // Log any errors
+    if (error) {
+      console.log(error);
+    }
+    // Or send the doc to the browser as a json object
+    else {
+      res.json(doc);
+    }
+  });
+});
+
 
 // Grab an article by it's ObjectId
 app.get("/articles/:id", function(req, res) {
